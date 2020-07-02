@@ -4,5 +4,11 @@
   "description": "A simple client-side previewer for Markdown.",
   "main": "server.js",
   "author": "@dvbsknd",
-  "license": "ISC"
+  "license": "ISC",
+  "scripts": {
+    "start": "npx nodemon server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
 }

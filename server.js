@@ -16,4 +16,4 @@ const server = http.createServer((req, res) => {
 
 const findFile = (url) => __dirname + url;
 
-server.listen(PORT, console.log('[Status] Server is up at', PORT));
+server.listen(PORT, console.log('[Status] Server is up and hot-refreshing at', PORT));
