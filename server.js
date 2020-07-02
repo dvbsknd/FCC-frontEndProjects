@@ -1,6 +1,19 @@
-const http = require('http');
+const PORT = 3000;
+const http = require('http'),
+  fs = require('fs');
+
 const server = http.createServer((req, res) => {
-  res.writeHead(200, {"Content-Type": "text/html"});
-  res.end('Hey.', console.log('Responded to', req.url));
+  console.log('[Request]', req.url);
+  fs.readFile(findFile(req.url), (err, data) => {
+    if (err) {
+      res.end(err.message, console.log('[Error]', err));
+    } else {
+      res.writeHead(200, {"Content-Type": "text/html"});
+      res.end(data, console.log('[Response]', req.url));
+    }
+  });
 });
-server.listen(3000, console.log('Server is up at 3000'));
+
+const findFile = (url) => __dirname + url;
+
+server.listen(PORT, console.log('[Status] Server is up at', PORT));
