@@ -14,6 +14,6 @@ const server = http.createServer((req, res) => {
   });
 });
 
-const findFile = (url) => __dirname + url;
+const findFile = (url) => __dirname + '/challenges' + url;
 
 server.listen(PORT, console.log('[Status] Server is up and hot-refreshing at', PORT));
