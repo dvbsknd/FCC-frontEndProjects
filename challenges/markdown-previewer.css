@@ -1,0 +1,14 @@
+#root {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+#root textarea {
+  border: 1px solid black;
+  outline: none;
+  resize: none;
+  overflow: auto;
+  height: 100%;
+}
