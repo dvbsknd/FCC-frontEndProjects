@@ -17,7 +17,7 @@ const server = http.createServer((req, res) => {
 const findFile = (url) => __dirname + '/challenges' + url;
 
 const getContentType = (url) => {
-  const fileType = url.match(/\.(html|css|js)$/g);
+  const fileType = url.match(/\.(html|css|js|png)$/g);
   switch (fileType[0]) {
     case '.html':
       return { 'Content-Type': 'text/html' };
