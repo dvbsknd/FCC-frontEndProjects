@@ -6,7 +6,7 @@ There's a stand-alone [test script](https://cdn.freecodecamp.org/testable-projec
 
 ## Stack & infrastructure
 
-The server is a simple, raw NodeJS implementation serving the static files found in the `/challenges` directory. `yarn` or `npm` can be used for package management, but I have used `npm` just to minimise the number of tools and dependencies. I have installed `nodemone` as a dev. dependency to get the benefit of hot-reloading and this is run via the `npm start` script using `npx` so that it doesn't need to be installed globally.
+The server is a simple, raw [NodeJS](https://nodejs.org/) implementation serving the static files found in the `/challenges` directory. `yarn` or `npm` can be used for package management, but I have used `npm` just to minimise the number of tools and dependencies. I have installed `nodemon` as a dev. dependency to get the benefit of hot-reloading and this is run via the `npm start` script using `npx` so that it doesn't need to be installed globally.
 
 The server sets correct `Content-Type` headers for `css`, `js` and `html` files, and if others are required (such as images) they'll be added along the way.
 
