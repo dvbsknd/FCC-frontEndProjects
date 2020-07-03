@@ -25,6 +25,8 @@ const getContentType = (url) => {
       return { 'Content-Type': 'text/css' };
     case '.js':
       return { 'Content-Type': 'text/javascript' };
+    case '.png':
+      return { 'Content-Type': 'image/png' };
     default:
       return { 'Content-Type': 'text/plain' };
   }
