@@ -5,10 +5,17 @@
   grid-auto-rows: minmax(100px, auto);
 }
 
-#root textarea {
+#editor, 
+#preview {
   border: 1px solid black;
   outline: none;
   resize: none;
   overflow: auto;
   height: 100%;
+  margin: 0;
+  padding: 10px;
+}
+
+#preview *:first-child {
+  margin-top: 0;
 }

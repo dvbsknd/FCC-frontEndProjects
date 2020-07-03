@@ -7,9 +7,34 @@
   </head>
   <body>
     <div id="root">
-      <textarea id="editor"></textarea>
-      <textarea id="preview"></textarea>
+      <textarea id="editor">
+# A header (H1 size)
+## A sub header (H2 size)
+This is [a link](http://freecodecamp.org).
+And here we have some `inline code` which can also be presented as a code block:
+```
+$ cd ~
+$ ls -la
+$ clear
+```
+We can also render lists, of course:
+- Item 1
+- Item 2
+- Item 3
+
+And we have:
+> A blockquote, said someone.
+
+How about a nice image?
+
+![](/favicon.png)
+
+Wasn't _that_ **fun**?
+      </textarea>
+      <div id="preview"></div>
     </div>
     <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.1.0/marked.js" integrity="sha512-rXiPAAB1SBl2c36kXGQZjFeG5y5GObuOoCIzSY3q13exK1ByKWQrzv9qu8iensM2vPdOucvhduZL0KyTwPzBmA==" crossorigin="anonymous"></script>
+    <script src="markdown-previewer.js"></script>
   </body>
 </html>
