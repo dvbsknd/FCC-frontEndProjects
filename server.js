@@ -8,7 +8,7 @@ const server = http.createServer((req, res) => {
     if (err) {
       res.end(err.message, console.log('[Error]', err));
     } else {
-      res.writeHead(200, {"Content-Type": "text/html"});
+      res.writeHead(200, getContentType(req.url));
       res.end(data, console.log('[Response]', req.url));
     }
   });
@@ -16,4 +16,18 @@ const server = http.createServer((req, res) => {
 
 const findFile = (url) => __dirname + '/challenges' + url;
 
-server.listen(PORT, console.log('[Status] Server is up and hot-refreshing at', PORT));
+const getContentType = (url) => {
+  const fileType = url.match(/\.(html|css|js)$/g);
+  switch (fileType[0]) {
+    case '.html':
+      return { 'Content-Type': 'text/html' };
+    case '.css':
+      return { 'Content-Type': 'text/css' };
+    case '.js':
+      return { 'Content-Type': 'text/javascript' };
+    default:
+      return { 'Content-Type': 'text/plain' };
+  }
+};
+
+server.listen(PORT, console.log('[Status] Server is up and hot-reloading at', PORT));
