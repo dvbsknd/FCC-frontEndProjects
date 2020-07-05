@@ -4,7 +4,9 @@ const http = require('http'),
 
 const server = http.createServer((req, res) => {
   console.log('[Request]', req.url);
-  fs.readFile(findFile(req.url), (err, data) => {
+  const file = getFilePath(req.url);
+  console.log('[File]', file);
+  fs.readFile(file, (err, data) => {
     if (err) {
       res.end(err.message, console.log('[Error]', err));
     } else {
@@ -14,7 +16,8 @@ const server = http.createServer((req, res) => {
   });
 });
 
-const findFile = (url) => __dirname + '/challenges' + url;
+const getFilePath = (url) => __dirname + '/challenges' + getFileName(url);
+const getFileName = (url) => url;
 
 const getContentType = (url) => {
   const fileType = url.match(/\.(html|css|js|png)$/g);
