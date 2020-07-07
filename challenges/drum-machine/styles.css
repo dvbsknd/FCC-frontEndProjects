@@ -1,0 +1,71 @@
+/* Resets from https://alligator.io/css/minimal-css-reset/ */
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ol, ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-family: 'Inconsolata', monospace;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fonts from Google Fonts */
+
+
+/* Flex layout */
+
+/* The display panel appears before the buttons in the 
+ * source order, but it will appear on the right on 
+ * wide viewports and wrap to sit on top for narrow ones
+ * so that the buttons are near the bottom of the screen
+ * on mobile, portrait devices
+ */
+
+#drum-machine {
+  /* Vertical centring on the page */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Setting up Flexbox for children */ 
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.Bank {
+  border: 1px solid green;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  column-gap: 15px;
+  row-gap: 15px;
+}
+
+.Bank > li > a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  background-color: pink;
+  text-decoration: none;
+  color: black;
+}

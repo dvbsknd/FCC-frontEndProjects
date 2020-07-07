@@ -30,13 +30,22 @@ class Machine extends React.Component {
 class Bank extends React.Component {
   render() {
     return(
-      <ol>{this.props.data.pads.map((pad, idx) => <Pad key={idx} clip={pad} />)}</ol>);
+      <ol id="display" className={this.constructor.name}>{this.props.data.pads.map((pad, idx) => <Pad key={idx} clip={pad} />)}</ol>);
   }
 }
 
 class Pad extends React.Component {
   render() {
-    return(<li><a href={this.props.clip.file}>{this.props.clip.clipKey}</a></li>);
+    return(
+      <li className={this.constructor.name + ' drum-pad'} id={`pad-${this.props.clip.clipKey}`}>
+        <a href={this.props.clip.file}>
+          {this.props.clip.clipKey}
+        <audio>
+          <source src={this.props.clip.name} type="audio/mpeg" />
+        </audio>
+        </a>
+      </li>
+    );
   }
 }
 
