@@ -40,4 +40,4 @@ class Pad extends React.Component {
   }
 }
 
-ReactDOM.render(<Machine />, document.querySelector('#app'));
+ReactDOM.render(<Machine />, document.querySelector('#drum-machine'));
