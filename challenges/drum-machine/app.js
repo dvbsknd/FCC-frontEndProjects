@@ -35,15 +35,11 @@ class Bank extends React.Component {
 }
 
 class Pad extends React.Component {
-  handlePadClick(e) {
-    e.preventDefault();
-    let audio = e.target.children[0];
-    audio.play();
-  }
-  handleKeyPress(e) {
-    let keyPressed = e.key.toUpperCase();
-    let audio = document.getElementById(keyPressed);
-    audio ? audio.play() : console.log('No clip for', keyPressed);
+  constructor(props) {
+    super(props);
+    this.playClip = this.playClip.bind(this);
+    this.handlePadClick = this.handlePadClick.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
@@ -51,13 +47,26 @@ class Pad extends React.Component {
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyPress);
   }
+  playClip(audio) {
+    audio.play();
+  }
+  handlePadClick(e) {
+    e.preventDefault();
+    let audio = e.target.children[0];
+    this.playClip(audio);
+  }
+  handleKeyPress(e) {
+    if (e.key.toUpperCase() === this.props.clip.clipKey) {
+      let audio = document.getElementById(this.props.clip.clipKey);
+      this.playClip(audio);
+    }
+  }
   render() {
     return(
       <li className={this.constructor.name + ' drum-pad'} id={`pad-${this.props.clip.clipKey}`}>
         <a
           href={this.props.clip.file}
-          onClick={this.handlePadClick.bind(this)}
-          onKeyDown={(e) => this.handleKeyPress(e)}
+          onClick={this.handlePadClick}
         >
           {this.props.clip.clipKey}
         <audio className='clip' id={this.props.clip.clipKey} src={this.props.clip.file} type="audio/mpeg" ></audio>
