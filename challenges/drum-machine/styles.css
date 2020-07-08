@@ -12,8 +12,6 @@ html {
 body, h1, h2, h3, h4, h5, h6, p, ol, ul {
   margin: 0;
   padding: 0;
-  font-weight: normal;
-  font-family: 'Inconsolata', monospace;
 }
 
 ol, ul {
@@ -51,7 +49,6 @@ img {
 }
 
 .Bank {
-  border: 1px solid green;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -65,7 +62,18 @@ img {
   align-items: center;
   width: 100px;
   height: 100px;
-  background-color: pink;
   text-decoration: none;
   color: black;
+}
+
+/* Theme */
+
+body { 
+  background-color: #ebcf88;
+  font-weight: normal;
+  font-family: 'Inconsolata', monospace;
+}
+
+.Bank > li > a {
+  background-color: #88A4EB;
 }
