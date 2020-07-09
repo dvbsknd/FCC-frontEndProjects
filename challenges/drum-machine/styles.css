@@ -35,7 +35,7 @@ img {
  * on mobile, portrait devices
  */
 
-#drum-machine {
+#drum-machine > div {
   /* Vertical centring on the page */
   position: fixed;
   top: 50%;
@@ -43,7 +43,7 @@ img {
   transform: translate(-50%, -50%);
   /* Setting up Flexbox for children */ 
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: column;
   flex-wrap: wrap;
   align-items: stretch;
 }
@@ -56,14 +56,19 @@ img {
   row-gap: 15px;
 }
 
-.Bank > li > a {
+.Bank > li {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100px;
   height: 100px;
-  text-decoration: none;
-  color: black;
+  cursor: pointer;
+}
+
+.Display {
+  height: 30px;
+  margin-top: 10px;
+  text-align: center;
 }
 
 /* Theme */
@@ -74,6 +79,10 @@ body {
   font-family: 'Inconsolata', monospace;
 }
 
-.Bank > li > a {
+.Bank > li {
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
   background-color: #88A4EB;
 }
