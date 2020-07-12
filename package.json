@@ -1,7 +1,7 @@
 {
-  "name": "markdown-previewer",
+  "name": "freeCodeCamp Front-end Projects Collection",
   "version": "0.0.1",
-  "description": "A simple client-side previewer for Markdown.",
+  "description": "A server to run and view my works in progress for the freeCodeCamp front-end libraries project.",
   "main": "server.js",
   "author": "@dvbsknd",
   "license": "ISC",
