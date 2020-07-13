@@ -1,7 +1,11 @@
 {
-  "name": "freeCodeCamp Front-end Projects Collection",
+  "name": "freecodecamp-frontend-projects",
   "version": "0.0.1",
   "description": "A server to run and view my works in progress for the freeCodeCamp front-end libraries project.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dvbsknd/freeCodeCamp-frontEndProjects.git"
+  },
   "main": "server.js",
   "author": "@dvbsknd",
   "license": "ISC",

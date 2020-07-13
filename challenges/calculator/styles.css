@@ -1,0 +1,131 @@
+ol, ul, li {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+body { 
+  background-color: #111;
+  font-weight: normal;
+  font-family: 'Inconsolata', monospace;
+}
+
+#app {
+  /* Vertical centring on the page */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 50px);
+  grid-template-rows: repeat(6, 50px);
+  grid-gap: 10px;
+}
+
+/* Key positions */
+#display { 
+  grid-column: 1 / span 4; 
+  grid-row: 1 / span 1;
+}
+#clear { 
+  grid-column: 1 / span 1; 
+  grid-row: 2 / span 1;
+}
+#add { 
+  grid-column: 3 / span 1; 
+  grid-row: 2 / span 1;
+}
+#subtract { 
+  grid-column: 4 / span 1; 
+  grid-row: 2 / span 1;
+}
+#multiply { 
+  grid-column: 4 / span 1; 
+  grid-row: 3 / span 1;
+}
+#divide { 
+  grid-column: 4 / span 1; 
+  grid-row: 4 / span 1;
+}
+#decimal { 
+  grid-column: 1 / span 1; 
+  grid-row: 6 / span 1;
+}
+#equals { 
+  grid-column: 4 / span 1; 
+  grid-row: 6 / span 1;
+}
+#zero { 
+  grid-column: 2 / span 1; 
+  grid-row: 6 / span 1;
+}
+#one { 
+  grid-column: 1 / span 1; 
+  grid-row: 5 / span 1;
+}
+#two { 
+  grid-column: 2 / span 1; 
+  grid-row: 5 / span 1;
+}
+#three { 
+  grid-column: 3 / span 1; 
+  grid-row: 5 / span 1;
+}
+#four { 
+  grid-column: 1 / span 1; 
+  grid-row: 4 / span 1;
+}
+#five { 
+  grid-column: 2 / span 1; 
+  grid-row: 4 / span 1;
+}
+#six { 
+  grid-column: 3 / span 1; 
+  grid-row: 4 / span 1;
+}
+#seven { 
+  grid-column: 1 / span 1; 
+  grid-row: 3 / span 1;
+}
+#eight { 
+  grid-column: 2 / span 1; 
+  grid-row: 3 / span 1;
+}
+#nine { 
+  grid-column: 3 / span 1; 
+  grid-row: 3 / span 1;
+}
+
+/* Button layout */
+
+#keypad li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 100%;
+}
+
+/* Button styling */
+#keypad li {
+  color: white;
+  font-size: 22px;
+}
+#keypad li.action {
+  background-color: #E4871B;
+}
+#keypad li#clear {
+  background-color: #CB3440;
+}
+#keypad li.number{
+  background-color: #333;
+}
+
+/* Display styling */
+#keypad li#display {
+  cursor: default;
+  letter-spacing: .15em;
+}
