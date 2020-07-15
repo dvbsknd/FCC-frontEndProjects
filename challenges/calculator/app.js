@@ -1,6 +1,7 @@
 const TYPES = {
   number: 'number',
-  action: 'action'
+  operator: 'operator',
+  clear: 'clear'
 }
 const OPERATORS = {
   add: '+',
@@ -14,12 +15,12 @@ const ACTIONS = {
   clear: 'clear'
 }
 const BUTTONS = [
-  { type: TYPES.action, label: 'C', value: ACTIONS.clear, id: "clear"},
-  { type: TYPES.action, label: '=', value: ACTIONS.calculate, id: "equals"},
-  { type: TYPES.action, label: '+', value: OPERATORS.add, id: "add"},
-  { type: TYPES.action, label: '-', value: OPERATORS.subtract, id: "subtract"},
-  { type: TYPES.action, label: '×', value: OPERATORS.multiply, id: "multiply"},
-  { type: TYPES.action, label: '÷', value: OPERATORS.divide, id: "divide"},
+  { type: TYPES.clear, label: 'C', value: ACTIONS.clear, id: "clear"},
+  { type: TYPES.operator, label: '=', value: ACTIONS.calculate, id: "equals"},
+  { type: TYPES.operator, label: '+', value: OPERATORS.add, id: "add"},
+  { type: TYPES.operator, label: '-', value: OPERATORS.subtract, id: "subtract"},
+  { type: TYPES.operator, label: '×', value: OPERATORS.multiply, id: "multiply"},
+  { type: TYPES.operator, label: '÷', value: OPERATORS.divide, id: "divide"},
   { type: TYPES.number, label: '.', value: OPERATORS.decimal, id: "decimal"},
   { type: TYPES.number, label: '0', value: 0, id: "zero"},
   { type: TYPES.number, label: '1', value: 1, id: "one"},
@@ -38,31 +39,76 @@ class Calculator extends React.Component {
     super(props);
     this.state = {
       buttons: BUTTONS.slice(),
-      buffer: '0'
+      input: '0',
+      result: '0',
+      pendingOperation: null,
+      prompt: true
     }
-    this.handlePress = this.handlePress.bind(this);
+    this.calculate= this.calculate.bind(this);
   }
-  handlePress(e) {
-    const action = BUTTONS.find(button => button.id === e.target.id).value;
-    switch (action) {
+  calculate(button) {
+    let { input, pendingOperation, result, prompt } = this.state;
+
+    console.log('button:', button);
+    console.log('state', this.state);
+
+    switch (button.type) {
+
       case 'clear':
-        this.setState({ buffer: ''});
+        console.log('switch: clear');
+        /* Reset all state if user has hit 'clear' */
+        this.setState({
+          pendingOperation: null,
+          result: '0',
+          input: '0',
+          prompt: true
+        });
         break;
-      case 'calculate':
-        const formula = new Function(`return ${this.state.buffer};`);
-        const result = formula();
-        this.setState({ buffer: result });
+
+      case 'number':
+        console.log('switch: number');
+        if (prompt === true) { /* Buffer is ready to accept input */
+          this.setState({ input: button.value, prompt: false })
+        } else {
+          /* Buffer has numbers: append incoming number */
+          this.setState({
+            input: input.toString().concat(button.value),
+            prompt: false })
+        }
         break;
-      default:
-        if (this.state.buffer === '' && typeof(action) !== 'number') break;
-        else this.setState({ buffer: this.state.buffer + action });
+
+      case 'operator':
+        /* Apply the queued operator between the previous result and the
+         * current input, then store the new value as the result, ready
+         * for new input. Set the supplied operator as the forthcoming
+         * operation for the next time a calculation is done */
+
+        /* Provided there's an operator to apply, convert the current result
+         * (a String) into a Function and evaluate it, otherwise just set
+         * the result to whatever is currently in the input */
+        let newResult;
+        if (pendingOperation) {
+          newResult = new Function(`return ${result} ${pendingOperation} ${input};`)();
+        } else {
+          newResult = input;
+        }
+        /* Update the input and result accordingly, and set the just-supplied
+         * operator as the one to be used in the next calculation cycle */
+        this.setState({
+          input: newResult,
+          result: newResult,
+          pendingOperation: button.value === ACTIONS.calculate ? null : button.value,
+          prompt: true
+        });
+        break;
     }
   }
   render() {
     return(<Keypad
-      buffer={this.state.buffer}
+      result={this.state.result}
+      input={this.state.input}
       buttons={this.state.buttons}
-      handlePress={this.handlePress}
+      calculate={this.calculate}
     />)
   }
 }
@@ -74,14 +120,17 @@ class Keypad extends React.Component {
   render() {
     return(
       <ul id="keypad">
-        <Display buffer={this.props.buffer} />
+        <Display
+          result={this.props.result}
+          input={this.props.input}
+        />
         {this.props.buttons.map((button, idx) => <Button
           key={idx}
           id={button.id}
           label={button.label}
           type={button.type}
           value={button.value}
-          handlePress={this.props.handlePress}
+          calculate={this.props.calculate}
         />)}
       </ul>
     )
@@ -90,19 +139,29 @@ class Keypad extends React.Component {
 
 class Display extends React.Component {
   render() {
-    return(<li id='display'>{this.props.buffer}</li>);
+    return(<li id='display'>{this.props.input}</li>);
   }
 }
 
 class Button extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      active: false
+    }
+    this.handlePress = this.handlePress.bind(this);
+  }
+  handlePress(e) {
+    const button = BUTTONS.find(button => button.id === e.target.id);
+    this.setState({ active: true });
+    setTimeout(() => console.log(this, 'Will deactivate'), 2000);
+    this.props.calculate(button);
   }
   render() {
     return(<li
       id={this.props.id}
       className={this.props.type}
-      onClick={this.props.handlePress}
+      onClick={this.handlePress}
     >{this.props.label}</li>);
   }
 }

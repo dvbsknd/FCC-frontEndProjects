@@ -16,6 +16,9 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  padding: 20px;
+  background: #222;
+  border-radius: 5px;
 }
 
 #keypad {
@@ -114,7 +117,7 @@ body {
   color: white;
   font-size: 22px;
 }
-#keypad li.action {
+#keypad li.operator{
   background-color: #E4871B;
 }
 #keypad li#clear {
@@ -127,5 +130,12 @@ body {
 /* Display styling */
 #keypad li#display {
   cursor: default;
+  font-size: 28px;
   letter-spacing: .15em;
+  border-radius: 0;
+  justify-content: flex-end;
+  padding-right: 11px;
+  margin-bottom: 5px;
+  background-color: #000;
+  border-radius: 5px;
 }
