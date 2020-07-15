@@ -154,13 +154,13 @@ class Button extends React.Component {
   handlePress(e) {
     const button = BUTTONS.find(button => button.id === e.target.id);
     this.setState({ active: true });
-    setTimeout(() => console.log(this, 'Will deactivate'), 2000);
+    setTimeout(() => this.setState({ active: false }), 800);
     this.props.calculate(button);
   }
   render() {
     return(<li
       id={this.props.id}
-      className={this.props.type}
+      className={`${this.state.active === true ? 'active ' : ''}${this.props.type}`}
       onClick={this.handlePress}
     >{this.props.label}</li>);
   }
