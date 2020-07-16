@@ -71,12 +71,12 @@ class Calculator extends React.Component {
           this.setState({ 
             input: button.value,
             prompt: false 
-          })
+          });
         } else {
           /* Buffer has numbers: append incoming number */
           this.setState({
             input: input.toString().concat(button.value)
-          })
+          });
         }
         break;
 
@@ -90,9 +90,18 @@ class Calculator extends React.Component {
          * (a String) into a Function and evaluate it, otherwise just set
          * the result to whatever is currently in the input */
         let newResult;
-        if (pendingOperation && prompt === false) {
+        if (
+          pendingOperation
+          && prompt === true
+          && button.value === OPERATORS.subtract
+        ) {
+          this.setState({ input: '-', prompt: false });
+          break;
+        }
+        else if (pendingOperation && prompt === false) {
           newResult = new Function(`return ${result} ${pendingOperation} ${input};`)();
-        } else {
+        }
+        else {
           newResult = input;
         }
 
