@@ -135,7 +135,9 @@ class Keypad extends React.Component {
 
 class Display extends React.Component {
   render() {
-    return(<li id='display'>{this.props.input}</li>);
+    let { input } = this.props;
+    if (input.length > 11) input = input.slice(0, 11);
+    return(<li id='display'>{input}</li>);
   }
 }
 
