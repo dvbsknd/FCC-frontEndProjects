@@ -62,8 +62,14 @@ class Calculator extends React.Component {
         break;
 
       case 'number':
+        console.log(button.value);
+        /* Prevent logging of multiple zeros in a row */
+        if (this.state.input === 0 && button.value === 0) break;
         if (prompt === true) { /* Buffer is ready to accept input */
-          this.setState({ input: button.value, prompt: false })
+          this.setState({ 
+            input: button.value,
+            prompt: false 
+          })
         } else {
           /* Buffer has numbers: append incoming number */
           this.setState({
