@@ -62,9 +62,11 @@ class Calculator extends React.Component {
         break;
 
       case 'number':
-        console.log(button.value);
         /* Prevent logging of multiple zeros in a row */
         if (this.state.input === 0 && button.value === 0) break;
+        /* Prevent logging of multiple decimals in a row */
+        if (button.value === '.' && this.state.input.toString().includes('.')) break;
+        /* Handle normal input */
         if (prompt === true) { /* Buffer is ready to accept input */
           this.setState({ 
             input: button.value,
@@ -142,7 +144,7 @@ class Keypad extends React.Component {
 class Display extends React.Component {
   render() {
     let { input } = this.props;
-    if (input.length > 11) input = input.slice(0, 11);
+    if (input.toString().length > 11) input = input.toString().slice(0, 11);
     return(<li id='display'>{input}</li>);
   }
 }
