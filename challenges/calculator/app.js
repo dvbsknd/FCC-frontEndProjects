@@ -49,13 +49,9 @@ class Calculator extends React.Component {
   calculate(button) {
     let { input, pendingOperation, result, prompt } = this.state;
 
-    console.log('button:', button);
-    console.log('state', this.state);
-
     switch (button.type) {
 
       case 'clear':
-        console.log('switch: clear');
         /* Reset all state if user has hit 'clear' */
         this.setState({
           pendingOperation: null,
@@ -66,7 +62,6 @@ class Calculator extends React.Component {
         break;
 
       case 'number':
-        console.log('switch: number');
         if (prompt === true) { /* Buffer is ready to accept input */
           this.setState({ input: button.value, prompt: false })
         } else {
