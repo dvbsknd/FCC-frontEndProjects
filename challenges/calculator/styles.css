@@ -116,6 +116,9 @@ body {
 #keypad li {
   color: white;
   font-size: 22px;
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: 0.5s;
 }
 #keypad li.operator{
   background-color: #E4871B;
@@ -125,6 +128,9 @@ body {
 }
 #keypad li.number{
   background-color: #333;
+}
+#keypad li.active {
+  opacity: 0.1;
 }
 
 /* Display styling */

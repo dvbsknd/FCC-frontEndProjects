@@ -149,7 +149,7 @@ class Button extends React.Component {
   handlePress(e) {
     const button = BUTTONS.find(button => button.id === e.target.id);
     this.setState({ active: true });
-    setTimeout(() => this.setState({ active: false }), 800);
+    setTimeout(() => this.setState({ active: false }), 200);
     this.props.calculate(button);
   }
   render() {
