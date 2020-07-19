@@ -10,7 +10,8 @@
   "author": "@dvbsknd",
   "license": "ISC",
   "scripts": {
-    "start": "npx nodemon server.js"
+    "start": "node server.js",
+    "dev": "npx nodemon"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
