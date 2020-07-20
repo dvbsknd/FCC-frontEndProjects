@@ -20,3 +20,57 @@ body {
   background: #222;
   border-radius: 5px;
 }
+
+#display {
+  justify-content: center;
+  text-align: center;
+  cursor: default;
+  font-size: 28px;
+  letter-spacing: .15em;
+  margin-bottom: 5px;
+  background-color: #000;
+  border-radius: 5px;
+  color: white;
+}
+
+#controls {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  grid-gap: 10px;
+}
+
+#settings {
+  /* Layout for the session and break length
+   * adjusters */
+
+}
+
+/* Button layout */
+#controls li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 100%;
+}
+
+/* Button styling */
+#controls li {
+  color: white;
+  font-size: 22px;
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: 0.5s;
+}
+#controls li.operator{
+  background-color: #E4871B;
+}
+#controls li#clear {
+  background-color: #CB3440;
+}
+#controls li.number{
+  background-color: #333;
+}
+#controls li.active {
+  opacity: 0.1;
+}
