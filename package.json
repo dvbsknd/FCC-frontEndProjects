@@ -10,9 +10,11 @@
   "author": "@dvbsknd",
   "license": "ISC",
   "scripts": {
-    "start": "npx nodemon server.js"
+    "start": "node server.js",
+    "dev": "npx nodemon -r dotenv/config"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "nodemon": "^2.0.4"
   }
 }
