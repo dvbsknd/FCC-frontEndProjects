@@ -20,7 +20,7 @@ function Clock(props) {
   const MODE = {
     ready: 'ready',
     running: 'running',
-    paused: 'paused',
+    stopped: 'stopped',
     finished: 'finished'
   }
 
@@ -43,13 +43,13 @@ function Clock(props) {
      * depending on the user's selection, and logic is
      * then dealt with using React's useEffect() below
      * which is fired whenever the state changes */
-    switch(e.target.id) {
+    switch(e.currentTarget.id) {
       case 'start':
         changeMode(MODE.running);
         break;
-      case 'pause':
+      case 'stop':
         window.clearTimeout(timerId);
-        changeMode(MODE.paused);
+        changeMode(MODE.stopped);
         break;
       case 'restart':
         window.clearTimeout(timerId);
@@ -93,18 +93,16 @@ function Clock(props) {
 
 function Display(props) {
   return (
-    <div>
-      <div id='display'>{props.time}</div>
-    </div>
+    <div id='display'>{props.time}</div>
   );
 }
 
 function Controls(props) {
   return (
-    <ul>
-      <li><button id='start' onClick={props.handler}>Start</button></li>
-      <li><button id='pause' onClick={props.handler}>Pause</button></li>
-      <li><button id='restart' onClick={props.handler}>Restart</button></li>
+    <ul id='controls'>
+      <li><button id='start' onClick={props.handler}><i className="fas fa-play"></i></button></li>
+      <li><button id='stop' onClick={props.handler}><i className="fas fa-pause"></i></button></li>
+      <li><button id='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
     </ul>
   )
 }

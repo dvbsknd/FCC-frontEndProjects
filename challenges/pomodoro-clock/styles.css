@@ -22,12 +22,11 @@ body {
 }
 
 #display {
-  justify-content: center;
   text-align: center;
-  cursor: default;
-  font-size: 28px;
+  font-size: 36px;
   letter-spacing: .15em;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
+  padding: 20px;
   background-color: #000;
   border-radius: 5px;
   color: white;
@@ -46,31 +45,29 @@ body {
 }
 
 /* Button layout */
-#controls li {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+#controls li { text-align: center; }
+#controls button {
   cursor: pointer;
   border-radius: 100%;
-}
-
-/* Button styling */
-#controls li {
+  border: 0px;
+  background-color: #999;
+  height: 40px;
+  width: 40px;
   color: white;
-  font-size: 22px;
+  font-size: 16px;
   opacity: 1;
   transition-property: opacity;
   transition-duration: 0.5s;
 }
-#controls li.operator{
+#controls button:focus {
+  outline: 0;
+}
+#controls button#reset {
   background-color: #E4871B;
 }
-#controls li#clear {
+#controls button#stop {
   background-color: #CB3440;
 }
-#controls li.number{
-  background-color: #333;
-}
-#controls li.active {
-  opacity: 0.1;
+#controls button#start {
+  background-color: #16913e;
 }
