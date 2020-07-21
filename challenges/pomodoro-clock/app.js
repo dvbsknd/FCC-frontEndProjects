@@ -51,6 +51,11 @@ function Clock(props) {
         window.clearTimeout(timerId);
         changeMode(MODE.paused);
         break;
+      case 'restart':
+        window.clearTimeout(timerId);
+        changeMode(MODE.ready);
+        setTime(25 * 60);
+        break;
       default:
         console.log('default');
     }
@@ -90,7 +95,6 @@ function Display(props) {
   return (
     <div>
       <div id='display'>{props.time}</div>
-      <div id='status'>{props.mode}</div>
     </div>
   );
 }
