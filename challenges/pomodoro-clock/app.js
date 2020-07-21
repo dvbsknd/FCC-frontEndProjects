@@ -32,6 +32,12 @@ function Clock(props) {
   const [remainingTime, setTime] = React.useState(25 * 60);
   const formattedTime = formatTime(remainingTime);
 
+  /* Somewhere to store the setTimeout IDs so that we can
+   * cancel them with the pause button. This allows the current
+    * loop to be immediately stopped rather than it counting
+    * down one last second via the active Timeout. */
+  let timerId;
+
   function controlClock(e) {
     /* This click handler simply changes the mode
      * depending on the user's selection, and logic is
@@ -42,6 +48,7 @@ function Clock(props) {
         changeMode(MODE.running);
         break;
       case 'pause':
+        window.clearTimeout(timerId);
         changeMode(MODE.paused);
         break;
       default:
@@ -57,7 +64,7 @@ function Clock(props) {
          * one second via the supplied function, which will
          * trigger another state update and bring you back
          * here as a result */
-        let timer = window.setTimeout(countDown, 1000);
+        timerId = window.setTimeout(countDown, 1000);
       }
     }
   );
