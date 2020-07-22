@@ -121,7 +121,7 @@ function Clock(props) {
 
 function Display(props) {
   return (
-    <div id='display'>{props.time}</div>
+    <div className='display' id='time-left'>{props.time}</div>
   );
 }
 
@@ -135,14 +135,14 @@ function Controls(props) {
     </ul>
       <form id='settings'>
         <h3>Settings</h3>
-        <label htmlFor='session-length'>Session</label>
+        <label id='session-label' htmlFor='session-length'>Session</label>
         <input
           type='number' id='session-length'
           name='session-length' value={props.sessionLength}
           min='0' max='60'
           onChange={props.handler}
         />
-        <label htmlFor='break-length'>Break</label>
+        <label id='break-label' htmlFor='break-length'>Break</label>
         <input type='number' id='break-length'
           name='break-length' value={props.breakLength}
           min='0' max='60'

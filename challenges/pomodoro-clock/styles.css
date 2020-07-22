@@ -21,7 +21,7 @@ body {
   border-radius: 5px;
 }
 
-#display {
+.display {
   text-align: center;
   font-size: 36px;
   letter-spacing: .15em;
