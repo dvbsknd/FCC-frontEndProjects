@@ -1,16 +1,26 @@
-function formatTime(seconds) {
+function formatTime(seconds, format) {
   /* Convert the time in milliseconds to something
-   * appropriate for the clock display of min:sec */
+   * appropriate for the clock display or settings
+   * fields, e.g min or min:sec */
   let mins = Math.floor(seconds/60);
   let secs = seconds % 60;
 
-  function pad(time) {
-    /* Pad time values with a leading zero if they are
-     * single digits */
-    return time < 10 ? '0'+time : time.toString();
-  }
+  switch(format) {
+    case 'mm:ss':
+      function pad(time) {
+        /* Pad time values with a leading zero if they are
+         * single digits */
+        return time < 10 ? '0'+time : time.toString();
+      }
 
-  return `${pad(mins)}:${pad(secs)}`;
+      return `${pad(mins)}:${pad(secs)}`;
+      break;
+    case 'mm':
+      return mins;
+      break;
+    default:
+      throw new Error('Format not recognised');
+  }
 }
 
 function Clock(props) {
@@ -24,13 +34,15 @@ function Clock(props) {
     finished: 'finished'
   }
 
-  /* The default mode is 'stopped' */
+  /* The default mode is 'ready' */
   const [mode, changeMode] = React.useState(MODE.ready);
 
-  /* Give the clock state, defaulted to zero in
-   * milliseconds */
-  const [remainingTime, setTime] = React.useState(25 * 60);
-  const formattedTime = formatTime(remainingTime);
+  /* Default session and break lenghts are stored in state */
+  const [sessionLength, changeSession] = React.useState(25 * 60);
+  const [breakLength, changeBreak] = React.useState(5 * 60);
+
+  /* Set the timer */
+  const [remainingTime, setTime] = React.useState(sessionLength);
 
   /* Somewhere to store the setTimeout IDs so that we can
    * cancel them with the pause button. This allows the current
@@ -39,11 +51,12 @@ function Clock(props) {
   let timerId;
 
   function controlClock(e) {
-    /* This click handler simply changes the mode
+    /* This click handler makes changes to the clock's state
      * depending on the user's selection, and logic is
      * then dealt with using React's useEffect() below
      * which is fired whenever the state changes */
-    switch(e.currentTarget.id) {
+    let control = e.currentTarget;
+    switch(control.id) {
       case 'start':
         changeMode(MODE.running);
         break;
@@ -51,19 +64,30 @@ function Clock(props) {
         window.clearTimeout(timerId);
         changeMode(MODE.stopped);
         break;
-      case 'restart':
+      case 'reset':
         window.clearTimeout(timerId);
         changeMode(MODE.ready);
-        setTime(25 * 60);
+        setTime(sessionLength);
+        break;
+      case 'session-length':
+        if (mode === MODE.ready) {
+          changeSession(control.value * 60);
+          setTime(control.value * 60);
+        }
+        break;
+      case 'break-length':
+        if (mode === MODE.ready) {
+          changeBreak(control.value * 60);
+        }
         break;
       default:
-        console.log('default');
+        throw new Error('Control action received but not recognised.');
     }
   }
 
   React.useEffect(() =>
     {
-      console.log(`${formatTime(remainingTime)} (${mode})`);
+      console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode})`);
       if (mode === MODE.running) {
         /* In one second, reduce the remaining time by
          * one second via the supplied function, which will
@@ -85,8 +109,12 @@ function Clock(props) {
 
   return (
     <div id='clock'>
-      <Display time={formattedTime} mode={mode} />
-      <Controls handler={controlClock} />
+      <Display time={formatTime(remainingTime, 'mm:ss')} mode={mode} />
+      <Controls
+        handler={controlClock}
+        breakLength={formatTime(breakLength, 'mm')}
+        sessionLength={formatTime(sessionLength, 'mm')}
+      />
     </div>
   );
 }
@@ -99,11 +127,29 @@ function Display(props) {
 
 function Controls(props) {
   return (
-    <ul id='controls'>
+    <div id='controls'>
+    <ul>
       <li><button id='start' onClick={props.handler}><i className="fas fa-play"></i></button></li>
       <li><button id='stop' onClick={props.handler}><i className="fas fa-pause"></i></button></li>
       <li><button id='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
     </ul>
+      <form id='settings'>
+        <h3>Settings</h3>
+        <label htmlFor='session-length'>Session</label>
+        <input
+          type='number' id='session-length'
+          name='session-length' value={props.sessionLength}
+          min='0' max='60'
+          onChange={props.handler}
+        />
+        <label htmlFor='break-length'>Break</label>
+        <input type='number' id='break-length'
+          name='break-length' value={props.breakLength}
+          min='0' max='60'
+          onChange={props.handler}
+        />
+      </form>
+    </div>
   )
 }
 

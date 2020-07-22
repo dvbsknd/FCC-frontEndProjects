@@ -32,19 +32,12 @@ body {
   color: white;
 }
 
-#controls {
+#controls ul {
   display: grid;
   grid-template-columns: repeat(3, 50px);
   grid-gap: 10px;
 }
 
-#settings {
-  /* Layout for the session and break length
-   * adjusters */
-
-}
-
-/* Button layout */
 #controls li { text-align: center; }
 #controls button {
   cursor: pointer;
@@ -70,4 +63,28 @@ body {
 }
 #controls button#start {
   background-color: #16913e;
+}
+
+#settings {
+  margin-top: 20px;
+  color: white;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(3, auto);
+  grid-row-gap: .5em;
+  align-items: center;
+}
+#settings * {
+  display: block;
+}
+#settings h3 {
+  grid-column: span 2;
+  text-align: center;
+  margin: 0 0 5px;
+  padding: 0;
+}
+#settings input[type=number] {
+  text-align: center;
+  padding: 5px;
+  font-family: 'Inconsolata', monospace;
 }
