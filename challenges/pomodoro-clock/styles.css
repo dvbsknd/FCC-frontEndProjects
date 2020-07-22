@@ -39,7 +39,7 @@ body {
 }
 
 #controls li { text-align: center; }
-#controls button {
+#controls li button {
   cursor: pointer;
   border-radius: 100%;
   border: 0px;
@@ -69,22 +69,39 @@ body {
   margin-top: 20px;
   color: white;
   display: grid;
-  grid-template-columns: repeat(2, auto);
+  grid-template-columns: repeat(4, auto);
   grid-template-rows: repeat(3, auto);
   grid-row-gap: .5em;
   align-items: center;
+  justify-content: center;
 }
 #settings * {
   display: block;
 }
 #settings h3 {
-  grid-column: span 2;
+  grid-column: span 4;
   text-align: center;
   margin: 0 0 5px;
   padding: 0;
+}
+#settings label {
+  padding: 0 8px 0 0;
 }
 #settings input[type=number] {
   text-align: center;
   padding: 5px;
   font-family: 'Inconsolata', monospace;
+  -moz-appearance: textfield;
+}
+/* Hide the default increment/decrement controls */
+#settings input[type=number]::-webkit-outer-spin-button,
+#settings input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#settings button {
+  border: 0px;
+  color: white;
+  font-size: 16px;
+  background: transparent;
 }

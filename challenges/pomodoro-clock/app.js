@@ -56,6 +56,7 @@ function Clock(props) {
      * then dealt with using React's useEffect() below
      * which is fired whenever the state changes */
     let control = e.currentTarget;
+    console.log(control);
     switch(control.id) {
       case 'start':
         changeMode(MODE.running);
@@ -69,15 +70,26 @@ function Clock(props) {
         changeMode(MODE.ready);
         setTime(sessionLength);
         break;
-      case 'session-length':
+      case 'session-increment':
         if (mode === MODE.ready) {
-          changeSession(control.value * 60);
-          setTime(control.value * 60);
+          changeSession(sessionLength + 60);
+          setTime(sessionLength + 60);
         }
         break;
-      case 'break-length':
+      case 'session-decrement':
         if (mode === MODE.ready) {
-          changeBreak(control.value * 60);
+          changeSession(sessionLength - 60);
+          setTime(sessionLength - 60);
+        }
+        break;
+      case 'break-increment':
+        if (mode === MODE.ready) {
+          changeBreak(breakLength + 60);
+        }
+        break;
+      case 'break-decrement':
+        if (mode === MODE.ready) {
+          changeBreak(breakLength - 60);
         }
         break;
       default:
@@ -129,25 +141,35 @@ function Controls(props) {
   return (
     <div id='controls'>
     <ul>
-      <li><button id='start' onClick={props.handler}><i className="fas fa-play"></i></button></li>
-      <li><button id='stop' onClick={props.handler}><i className="fas fa-pause"></i></button></li>
-      <li><button id='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
+      <li><button type='button' id='start' onClick={props.handler}><i className="fas fa-play"></i></button></li>
+      <li><button type='button' id='stop' onClick={props.handler}><i className="fas fa-pause"></i></button></li>
+      <li><button type='button' id='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
     </ul>
       <form id='settings'>
         <h3>Settings</h3>
         <label id='session-label' htmlFor='session-length'>Session</label>
+        <button type='button' id='session-decrement' onClick={props.handler}>
+          <i className="fas fa-arrow-alt-circle-left"></i>
+        </button>
         <input
           type='number' id='session-length'
           name='session-length' value={props.sessionLength}
           min='0' max='60'
-          onChange={props.handler}
         />
+        <button type='button' id='session-increment' onClick={props.handler}>
+          <i className="fas fa-arrow-alt-circle-right"></i>
+        </button>
         <label id='break-label' htmlFor='break-length'>Break</label>
+        <button type='button' id='break-decrement' onClick={props.handler}>
+          <i className="fas fa-arrow-alt-circle-left"></i>
+        </button>
         <input type='number' id='break-length'
           name='break-length' value={props.breakLength}
           min='0' max='60'
-          onChange={props.handler}
         />
+        <button type='button' id='break-increment' onClick={props.handler}>
+          <i className="fas fa-arrow-alt-circle-right"></i>
+        </button>
       </form>
     </div>
   )
