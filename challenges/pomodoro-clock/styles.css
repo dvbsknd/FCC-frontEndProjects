@@ -23,15 +23,22 @@ body {
 
 .display {
   text-align: center;
-  font-size: 36px;
-  letter-spacing: .15em;
   margin-bottom: 15px;
-  padding: 20px;
+  padding: 15px 20px;
   background-color: #000;
   border-radius: 5px;
   color: white;
 }
-
+.display h3 {
+  margin: 3px 0;
+  font-size: 18px;
+}
+.display p {
+  margin: 0;
+  font-size: 36px;
+  letter-spacing: .15em;
+}
+ 
 #controls ul {
   display: grid;
   grid-template-columns: repeat(3, 50px);
