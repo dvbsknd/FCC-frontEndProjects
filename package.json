@@ -11,9 +11,10 @@
   "license": "ISC",
   "scripts": {
     "start": "node server.js",
-    "dev": "npx nodemon"
+    "dev": "npx nodemon -r dotenv/config"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "nodemon": "^2.0.4"
   }
 }

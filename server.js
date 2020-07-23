@@ -1,3 +1,4 @@
+const ENV = process.env.NODE_ENV || 'production';
 const PORT = 3000;
 const http = require('http'),
   fs = require('fs');
@@ -35,4 +36,4 @@ const getContentType = (url) => {
   }
 };
 
-server.listen(PORT, console.log('[Status] Server is up and hot-reloading at', PORT));
+server.listen(PORT, console.log(`[Status] Server (${ENV}) listening on ${PORT}`));
