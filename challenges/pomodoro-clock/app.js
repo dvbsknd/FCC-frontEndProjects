@@ -96,6 +96,7 @@ function Clock(props) {
       case 'reset':
         window.clearTimeout(timerId);
         changeState(STATE.ready);
+        changeMode(MODE.session);
         setTime(sessionLength);
         break;
       case 'session-increment':
@@ -129,7 +130,6 @@ function Clock(props) {
       case 'break-length':
         if (state === STATE.ready) {
           changeBreak(control.value * 60);
-          setTime(control.value * 60);
         }
         break;
       default:
