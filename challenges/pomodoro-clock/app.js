@@ -44,7 +44,7 @@ function Clock(props) {
   }
 
   /* The clock also has two modes, "Session" and "Break". Each have
-   * different time periods they can run for and they effectively 
+   * different time periods they can run for and they effectively
    * alternate indefinitely */
   const MODE = {
     session: 'session',
@@ -82,12 +82,16 @@ function Clock(props) {
      * which is fired whenever the state changes */
     let control = e.currentTarget;
     switch(control.id) {
-      case 'start':
-        changeState(STATE.running);
-        break;
-      case 'stop':
-        window.clearTimeout(timerId);
-        changeState(STATE.stopped);
+      case 'start_stop':
+        /* The user stories require that the start and stop
+         * actinos be implemented by the same control, which
+         * toggles the running/stopped state */
+        if (state === STATE.stopped || state === STATE.ready) {
+          changeState(STATE.running);
+        } else {
+          window.clearTimeout(timerId);
+          changeState(STATE.stopped);
+        }
         break;
       case 'reset':
         window.clearTimeout(timerId);
@@ -102,8 +106,8 @@ function Clock(props) {
         break;
       case 'session-decrement':
         if (state === STATE.ready) {
-          changeSession(sessionLength - 60);
-          setTime(sessionLength - 60);
+          changeSession(sessionLength === 0 ? 0 : sessionLength - 60);
+          setTime(sessionLength === 0 ? 0 : sessionLength - 60);
         }
         break;
       case 'session-length':
@@ -119,7 +123,7 @@ function Clock(props) {
         break;
       case 'break-decrement':
         if (state === STATE.ready) {
-          changeBreak(breakLength - 60);
+          changeBreak(breakLength === 0 ? 0 : breakLength - 60);
         }
         break;
       case 'break-length':
@@ -148,7 +152,7 @@ function Clock(props) {
 
   function countDown() {
     if (remainingTime < 1) {
-      /* No more seconds on the clock, so we're finished 
+      /* No more seconds on the clock, so we're finished
        * the current counter. If we were in a session, we
        * switch to a break and vice versa. */
       changeState(STATE.finished);
@@ -167,6 +171,7 @@ function Clock(props) {
         handler={controlClock}
         breakLength={formatTime(breakLength, 'mm')}
         sessionLength={formatTime(sessionLength, 'mm')}
+        state={state}
       />
     </div>
   );
@@ -182,12 +187,14 @@ function Display(props) {
 }
 
 function Controls(props) {
+  let { state, handler } = props;
   return (
     <div id='controls'>
     <ul>
-      <li><button type='button' id='start' onClick={props.handler}><i className="fas fa-play"></i></button></li>
-      <li><button type='button' id='stop' onClick={props.handler}><i className="fas fa-pause"></i></button></li>
-      <li><button type='button' id='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
+      <li><button type='button' id='start_stop' className={state} onClick={handler}>
+        <i className={`fas fa-${state === 'running' ? 'pause' : 'play'}`}></i>
+      </button></li>
+      <li><button type='button' id='reset' className='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
     </ul>
       <form id='settings'>
         <h3>Settings</h3>

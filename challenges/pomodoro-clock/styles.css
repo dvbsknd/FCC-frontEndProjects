@@ -41,8 +41,9 @@ body {
  
 #controls ul {
   display: grid;
-  grid-template-columns: repeat(3, 50px);
-  grid-gap: 10px;
+  grid-template-columns: repeat(2, auto);
+  grid-gap: 15px;
+  justify-content: center;
 }
 
 #controls li { text-align: center; }
@@ -62,13 +63,14 @@ body {
 #controls button:focus {
   outline: 0;
 }
-#controls button#reset {
+#controls button.reset {
   background-color: #E4871B;
 }
-#controls button#stop {
+#controls button.running {
   background-color: #CB3440;
 }
-#controls button#start {
+#controls button.ready, 
+#controls button.stopped {
   background-color: #16913e;
 }
 
