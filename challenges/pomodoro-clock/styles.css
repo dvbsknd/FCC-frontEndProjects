@@ -101,6 +101,10 @@ body {
   padding: 5px;
   font-family: 'Inconsolata', monospace;
   -moz-appearance: textfield;
+  background: black;
+  color: white;
+  border-radius: 10%;
+  border: 0;
 }
 /* Hide the default increment/decrement controls */
 #settings input[type=number]::-webkit-outer-spin-button,
