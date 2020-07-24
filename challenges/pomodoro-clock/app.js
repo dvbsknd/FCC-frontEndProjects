@@ -107,8 +107,8 @@ function Clock(props) {
         break;
       case 'session-decrement':
         if (state === STATE.ready) {
-          changeSession(sessionLength === 0 ? 0 : sessionLength - 60);
-          setTime(sessionLength === 0 ? 0 : sessionLength - 60);
+          changeSession(sessionLength < 60 ? 0 : sessionLength - 60);
+          setTime(sessionLength < 60 ? 0 : sessionLength - 60);
         }
         break;
       case 'session-length':
@@ -124,7 +124,7 @@ function Clock(props) {
         break;
       case 'break-decrement':
         if (state === STATE.ready) {
-          changeBreak(breakLength === 0 ? 0 : breakLength - 60);
+          changeBreak(breakLength < 60 ? 0 : breakLength - 60);
         }
         break;
       case 'break-length':
