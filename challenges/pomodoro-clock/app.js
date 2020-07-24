@@ -63,8 +63,12 @@ function Clock(props) {
   }
 
   /* Default session and break lenghts are stored in state */
-  const [sessionLength, changeSession] = React.useState(25 * 60);
-  const [breakLength, changeBreak] = React.useState(5 * 60);
+  const DEFAULTS = {
+    session: 25 * 60,
+    break: 5 * 60
+  }
+  const [sessionLength, changeSession] = React.useState(DEFAULTS.session);
+  const [breakLength, changeBreak] = React.useState(DEFAULTS.break);
 
   /* Set the timer to the default time, ready to run. */
   const [remainingTime, setTime] = React.useState(sessionLength);
@@ -97,18 +101,22 @@ function Clock(props) {
         window.clearTimeout(timerId);
         changeState(STATE.ready);
         changeMode(MODE.session);
-        setTime(sessionLength);
+        changeSession(DEFAULTS.session);
+        changeBreak(DEFAULTS.break);
+        setTime(DEFAULTS.session);
         break;
       case 'session-increment':
         if (state === STATE.ready) {
-          changeSession(sessionLength + 60);
-          setTime(sessionLength + 60);
+          let newTime = sessionLength >= 60 * 60 ? 60 * 60 : sessionLength + 60;
+          changeSession(newTime);
+          setTime(newTime);
         }
         break;
       case 'session-decrement':
         if (state === STATE.ready) {
-          changeSession(sessionLength < 60 ? 0 : sessionLength - 60);
-          setTime(sessionLength < 60 ? 0 : sessionLength - 60);
+          let newTime = sessionLength <= 60 ? 60 : sessionLength - 60;
+          changeSession(newTime);
+          setTime(newTime);
         }
         break;
       case 'session-length':
@@ -119,12 +127,14 @@ function Clock(props) {
         break;
       case 'break-increment':
         if (state === STATE.ready) {
-          changeBreak(breakLength + 60);
+          let newTime = breakLength >= 60 * 60 ? 60 * 60 : breakLength + 60;
+          changeBreak(newTime);
         }
         break;
       case 'break-decrement':
+        let newTime = breakLength <= 60 ? 60 : breakLength - 60;
         if (state === STATE.ready) {
-          changeBreak(breakLength < 60 ? 0 : breakLength - 60);
+          changeBreak(newTime);
         }
         break;
       case 'break-length':
@@ -139,7 +149,7 @@ function Clock(props) {
 
   React.useEffect(() =>
     {
-      console.log(`${formatTime(remainingTime, 'mm:ss')} (${state})`);
+      console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode} ${state})`);
       if (state === STATE.running) {
         /* In one second, reduce the remaining time by
          * one second via the supplied function, which will
@@ -151,13 +161,14 @@ function Clock(props) {
   );
 
   function countDown() {
-    if (remainingTime < 1) {
+    if (remainingTime === 0) {
       /* No more seconds on the clock, so we're finished
        * the current counter. If we were in a session, we
        * switch to a break and vice versa. */
       changeState(STATE.finished);
       changeMode(flipMode(mode));
       setTime(breakLength);
+      changeState(STATE.ready);
       changeState(STATE.running);
     } else {
       setTime(remainingTime - 1);
@@ -206,7 +217,7 @@ function Controls(props) {
           type='number' id='session-length'
           name='session-length' value={props.sessionLength}
           onChange={props.handler}
-          min='0' max='60'
+          min='1' max='60'
         />
         <button type='button' id='session-increment' onClick={props.handler}>
           <i className="fas fa-arrow-alt-circle-right"></i>
@@ -218,7 +229,7 @@ function Controls(props) {
         <input type='number' id='break-length'
           name='break-length' value={props.breakLength}
           onChange={props.handler}
-          min='0' max='60'
+          min='1' max='60'
         />
         <button type='button' id='break-increment' onClick={props.handler}>
           <i className="fas fa-arrow-alt-circle-right"></i>
