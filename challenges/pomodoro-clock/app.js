@@ -32,15 +32,12 @@ function titleCase(str) {
 }
 
 function Clock(props) {
-  /* The clock has a number of states, which describe whether it's
-   * running, paused, ready, etc. Unfortunately the nomenclature is
-   * a little confusing as it ovelaps with React's "state" concept,
-   * but they are not related. */
+  /* The clock has two states, running or stopped. Unfortunately
+   * the nomenclature is a little confusing as it ovelaps with
+   * React's "state" concept, but they are not related. */
   const STATE = {
-    ready: 'ready',
     running: 'running',
-    stopped: 'stopped',
-    finished: 'finished'
+    stopped: 'stopped'
   }
 
   /* The clock also has two modes, "Session" and "Break". Each have
@@ -51,8 +48,8 @@ function Clock(props) {
     break: 'break'
   }
 
-  /* The default state is 'ready' */
-  const [state, changeState] = React.useState(STATE.ready);
+  /* The default state is 'stopped' */
+  const [state, changeState] = React.useState(STATE.stopped);
 
   /* The default mode is 'session' */
   const [mode, changeMode] = React.useState(MODE.session);
@@ -90,7 +87,7 @@ function Clock(props) {
         /* The user stories require that the start and stop
          * actinos be implemented by the same control, which
          * toggles the running/stopped state */
-        if (state === STATE.stopped || state === STATE.ready) {
+        if (state === STATE.stopped) {
           changeState(STATE.running);
         } else {
           window.clearTimeout(timerId);
@@ -99,46 +96,47 @@ function Clock(props) {
         break;
       case 'reset':
         window.clearTimeout(timerId);
-        changeState(STATE.ready);
+        controlSound('load');
+        changeState(STATE.stopped);
         changeMode(MODE.session);
         changeSession(DEFAULTS.session);
         changeBreak(DEFAULTS.break);
         setTime(DEFAULTS.session);
         break;
       case 'session-increment':
-        if (state === STATE.ready) {
+        if (state === STATE.stopped) {
           let newTime = sessionLength >= 60 * 60 ? 60 * 60 : sessionLength + 60;
           changeSession(newTime);
           setTime(newTime);
         }
         break;
       case 'session-decrement':
-        if (state === STATE.ready) {
+        if (state === STATE.stopped) {
           let newTime = sessionLength <= 60 ? 60 : sessionLength - 60;
           changeSession(newTime);
           setTime(newTime);
         }
         break;
       case 'session-length':
-        if (state === STATE.ready) {
+        if (state === STATE.stopped) {
           changeSession(control.value * 60);
           setTime(control.value * 60);
         }
         break;
       case 'break-increment':
-        if (state === STATE.ready) {
+        if (state === STATE.stopped) {
           let newTime = breakLength >= 60 * 60 ? 60 * 60 : breakLength + 60;
           changeBreak(newTime);
         }
         break;
       case 'break-decrement':
         let newTime = breakLength <= 60 ? 60 : breakLength - 60;
-        if (state === STATE.ready) {
+        if (state === STATE.stopped) {
           changeBreak(newTime);
         }
         break;
       case 'break-length':
-        if (state === STATE.ready) {
+        if (state === STATE.stopped) {
           changeBreak(control.value * 60);
         }
         break;
@@ -149,30 +147,33 @@ function Clock(props) {
 
   React.useEffect(() =>
     {
-      console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode} ${state})`);
-      if (state === STATE.running) {
+      if (remainingTime === 0) {
+        /* No more seconds on the clock, so we're finished
+         * the current counter. If we were in a session, we
+         * switch to a break and vice versa. */
+        controlSound('play');
+        changeMode(flipMode(mode));
+        /* Counterintuitively, if we're in 'session' we want to set
+         * the time to the 'break' length, because we're about to
+         * start a new break */
+        setTime(mode === MODE.session ? breakLength: sessionLength);
+        console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode} ${state})`);
+      }
+      else if (state === STATE.running) {
         /* In one second, reduce the remaining time by
          * one second via the supplied function, which will
          * trigger another state update and bring you back
          * here as a result */
-        timerId = window.setTimeout(countDown, 1000);
+        timerId = window.setTimeout(() => setTime(remainingTime - 1), 1000);
       }
     }
   );
 
-  function countDown() {
-    if (remainingTime === 0) {
-      /* No more seconds on the clock, so we're finished
-       * the current counter. If we were in a session, we
-       * switch to a break and vice versa. */
-      changeState(STATE.finished);
-      changeMode(flipMode(mode));
-      setTime(breakLength);
-      changeState(STATE.ready);
-      changeState(STATE.running);
-    } else {
-      setTime(remainingTime - 1);
-    }
+  function controlSound(action) {
+    /* This function just makes it a little nicer to start
+     * and stop the alarm sound as required */
+    const audioElement = document.getElementById('beep');
+    audioElement[action]();
   }
 
   return (
@@ -193,6 +194,7 @@ function Display(props) {
     <div className='display'>
       <h3 id='timer-label'>{titleCase(props.mode)}</h3>
       <p id='time-left'>{props.time}</p>
+      <audio id='beep' src="beep.m4a"></audio>
     </div>
   );
 }

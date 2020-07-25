@@ -21,7 +21,7 @@ const getFilePath = (url) => __dirname + '/challenges' + getFileName(url);
 const getFileName = (url) => url;
 
 const getContentType = (url) => {
-  const fileType = url.match(/\.(html|css|js|png)$/g);
+  const fileType = url.match(/\.(html|css|js|png|m4a)$/g);
   switch (fileType[0]) {
     case '.html':
       return { 'Content-Type': 'text/html' };
@@ -31,6 +31,8 @@ const getContentType = (url) => {
       return { 'Content-Type': 'text/javascript' };
     case '.png':
       return { 'Content-Type': 'image/png' };
+    case '.m4a':
+      return { 'Content-Type': 'audio/m4a' };
     default:
       return { 'Content-Type': 'text/plain' };
   }
