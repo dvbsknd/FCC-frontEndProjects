@@ -59,7 +59,7 @@ function Clock(props) {
     return mode === MODE.session ? MODE.break : MODE.session;
   }
 
-  /* Default session and break lenghts are stored in state */
+  /* Default session and break lengths are stored in state */
   const DEFAULTS = {
     session: 25 * 60,
     break: 5 * 60
