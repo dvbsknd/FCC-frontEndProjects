@@ -35,7 +35,7 @@ function Clock(props) {
   /* The clock has two states, running or stopped. Unfortunately
    * the nomenclature is a little confusing as it ovelaps with
    * React's "state" concept, but they are not related. */
-  const STATE = {
+  const CLOCK_STATE = {
     running: 'running',
     stopped: 'stopped'
   }
@@ -43,20 +43,20 @@ function Clock(props) {
   /* The clock also has two modes, "Session" and "Break". Each have
    * different time periods they can run for and they effectively
    * alternate indefinitely */
-  const MODE = {
+  const CLOCK_MODE = {
     session: 'session',
     break: 'break'
   }
 
   /* The default state is 'stopped' */
-  const [clockState, changeState] = React.useState(STATE.stopped);
+  const [clockState, changeState] = React.useState(CLOCK_STATE.stopped);
 
   /* The default mode is 'session' */
-  const [mode, changeMode] = React.useState(MODE.session);
+  const [mode, changeMode] = React.useState(CLOCK_MODE.session);
   /* We also have a small function to flip the mode
    * to whatever it's not. */
   function flipMode(mode) {
-    return mode === MODE.session ? MODE.break : MODE.session;
+    return mode === CLOCK_MODE.session ? CLOCK_MODE.break : CLOCK_MODE.session;
   }
 
   /* Another helper to crop the time to be within the lower and
@@ -85,7 +85,7 @@ function Clock(props) {
   let timerId;
 
   const setSession = (e) => {
-    if (clockState === STATE.stopped) {
+    if (clockState === CLOCK_STATE.stopped) {
       let newTime = cropTime(e.target.value * 60);
       changeSession(newTime);
       setTime(newTime);
@@ -94,7 +94,7 @@ function Clock(props) {
 
   const adjustSession = ({ clockState, sessionLength, action }) => () => {
     let adjustment = action === 'increment' ? 60 : 60 * -1;
-    if (clockState === STATE.stopped) {
+    if (clockState === CLOCK_STATE.stopped) {
       let newTime = cropTime(sessionLength + adjustment);
       changeSession(newTime);
       setTime(newTime);
@@ -102,31 +102,31 @@ function Clock(props) {
   }
 
   const setBreak = (e) => {
-    if (clockState === STATE.stopped) { changeBreak(cropTime(e.target.value * 60)); }
+    if (clockState === CLOCK_STATE.stopped) { changeBreak(cropTime(e.target.value * 60)); }
   }
 
   const adjustBreak = ({ clockState, breakLength, action }) => () => {
     let adjustment = action === 'increment' ? 60 : 60 * -1;
-    if (clockState === STATE.stopped) { changeBreak(cropTime(breakLength + adjustment)); }
+    if (clockState === CLOCK_STATE.stopped) { changeBreak(cropTime(breakLength + adjustment)); }
   }
 
   const startStop = ({ clockState }) => () => {
     /* The user stories require that the start and stop
      * actions be implemented by the same control, which
      * toggles the running/stopped state */
-    if (clockState === STATE.stopped) {
-      changeState(STATE.running);
+    if (clockState === CLOCK_STATE.stopped) {
+      changeState(CLOCK_STATE.running);
     } else {
       window.clearTimeout(timerId);
-      changeState(STATE.stopped);
+      changeState(CLOCK_STATE.stopped);
     }
   }
 
   const resetClock = () => {
     window.clearTimeout(timerId);
     controlSound('load');
-    changeState(STATE.stopped);
-    changeMode(MODE.session);
+    changeState(CLOCK_STATE.stopped);
+    changeMode(CLOCK_MODE.session);
     changeSession(DEFAULTS.session);
     changeBreak(DEFAULTS.break);
     setTime(DEFAULTS.session);
@@ -143,10 +143,10 @@ function Clock(props) {
         /* Counterintuitively, if we're in 'session' we want to set
          * the time to the 'break' length, because we're about to
          * start a new break */
-        setTime(mode === MODE.session ? breakLength: sessionLength);
+        setTime(mode === CLOCK_MODE.session ? breakLength: sessionLength);
         console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode} ${clockState})`);
       }
-      else if (clockState === STATE.running) {
+      else if (clockState === CLOCK_STATE.running) {
         /* In one second, reduce the remaining time by
          * one second via the supplied function, which will
          * trigger another state update and bring you back
