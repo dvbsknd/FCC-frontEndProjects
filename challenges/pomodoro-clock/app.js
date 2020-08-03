@@ -122,27 +122,15 @@ function Clock(props) {
     }
   }
 
-  function controlClock(e) {
-    /* This click handler makes changes to the clock's 'state'
-     * depending on the user's selection, and logic is
-     * then dealt with using React's useEffect() below
-     * which is fired whenever the state changes */
-    let control = e.currentTarget;
-    switch(control.id) {
-      case 'reset':
-        window.clearTimeout(timerId);
-        controlSound('load');
-        changeState(STATE.stopped);
-        changeMode(MODE.session);
-        changeSession(DEFAULTS.session);
-        changeBreak(DEFAULTS.break);
-        setTime(DEFAULTS.session);
-        break;
-      default:
-        throw new Error('Control action received but not recognised.');
-    }
+  const resetClock = () => {
+    window.clearTimeout(timerId);
+    controlSound('load');
+    changeState(STATE.stopped);
+    changeMode(MODE.session);
+    changeSession(DEFAULTS.session);
+    changeBreak(DEFAULTS.break);
+    setTime(DEFAULTS.session);
   }
-
 
   React.useEffect(() =>
     {
@@ -184,9 +172,9 @@ function Clock(props) {
           adjustSession,
           setBreak,
           adjustBreak,
-          startStop
+          startStop,
+          resetClock
         }}
-        handler={controlClock}
         breakLength={breakLength}
         sessionLength={sessionLength}
         clockState={clockState}
@@ -207,15 +195,15 @@ function Display(props) {
 }
 
 function Controls(props) {
-  let { clockState, handler, breakLength, sessionLength } = props;
-  let { setSession, adjustSession, setBreak, adjustBreak, startStop } = props.handlers;
+  let { clockState, breakLength, sessionLength } = props;
+  let { setSession, adjustSession, setBreak, adjustBreak, startStop, resetClock } = props.handlers;
   return (
     <div id='controls'>
     <ul>
       <li><button type='button' id='start_stop' className={clockState} onClick={startStop({ clockState })}>
         <i className={`fas fa-${clockState === 'running' ? 'pause' : 'play'}`}></i>
       </button></li>
-      <li><button type='button' id='reset' className='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
+      <li><button type='button' id='reset' className='reset' onClick={resetClock}><i className="fas fa-history"></i></button></li>
     </ul>
       <form id='settings'>
         <h3>Settings</h3>
