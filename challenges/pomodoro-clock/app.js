@@ -110,6 +110,18 @@ function Clock(props) {
     if (clockState === STATE.stopped) { changeBreak(cropTime(breakLength + adjustment)); }
   }
 
+  const startStop = ({ clockState }) => () => {
+    /* The user stories require that the start and stop
+     * actions be implemented by the same control, which
+     * toggles the running/stopped state */
+    if (clockState === STATE.stopped) {
+      changeState(STATE.running);
+    } else {
+      window.clearTimeout(timerId);
+      changeState(STATE.stopped);
+    }
+  }
+
   function controlClock(e) {
     /* This click handler makes changes to the clock's 'state'
      * depending on the user's selection, and logic is
@@ -117,17 +129,6 @@ function Clock(props) {
      * which is fired whenever the state changes */
     let control = e.currentTarget;
     switch(control.id) {
-      case 'start_stop':
-        /* The user stories require that the start and stop
-         * actinos be implemented by the same control, which
-         * toggles the running/stopped state */
-        if (clockState === STATE.stopped) {
-          changeState(STATE.running);
-        } else {
-          window.clearTimeout(timerId);
-          changeState(STATE.stopped);
-        }
-        break;
       case 'reset':
         window.clearTimeout(timerId);
         controlSound('load');
@@ -182,7 +183,8 @@ function Clock(props) {
           setSession,
           adjustSession,
           setBreak,
-          adjustBreak
+          adjustBreak,
+          startStop
         }}
         handler={controlClock}
         breakLength={breakLength}
@@ -206,11 +208,11 @@ function Display(props) {
 
 function Controls(props) {
   let { clockState, handler, breakLength, sessionLength } = props;
-  let { setSession, adjustSession, setBreak, adjustBreak } = props.handlers;
+  let { setSession, adjustSession, setBreak, adjustBreak, startStop } = props.handlers;
   return (
     <div id='controls'>
     <ul>
-      <li><button type='button' id='start_stop' className={clockState} onClick={handler}>
+      <li><button type='button' id='start_stop' className={clockState} onClick={startStop({ clockState })}>
         <i className={`fas fa-${clockState === 'running' ? 'pause' : 'play'}`}></i>
       </button></li>
       <li><button type='button' id='reset' className='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
