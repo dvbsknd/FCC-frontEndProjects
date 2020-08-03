@@ -49,7 +49,7 @@ function Clock(props) {
   }
 
   /* The default state is 'stopped' */
-  const [state, changeState] = React.useState(STATE.stopped);
+  const [clockState, changeState] = React.useState(STATE.stopped);
 
   /* The default mode is 'session' */
   const [mode, changeMode] = React.useState(MODE.session);
@@ -85,17 +85,16 @@ function Clock(props) {
   let timerId;
 
   const setSession = (e) => {
-    console.log(e.target.value, state);
-    if (state === STATE.stopped) {
+    if (clockState === STATE.stopped) {
       let newTime = cropTime(e.target.value * 60);
       changeSession(newTime);
       setTime(newTime);
     }
   }
 
-  const adjustSession = ({ state, sessionLength, action }) => () => {
+  const adjustSession = ({ clockState, sessionLength, action }) => () => {
     let adjustment = action === 'increment' ? 60 : 60 * -1;
-    if (state === STATE.stopped) {
+    if (clockState === STATE.stopped) {
       let newTime = cropTime(sessionLength + adjustment);
       changeSession(newTime);
       setTime(newTime);
@@ -103,12 +102,12 @@ function Clock(props) {
   }
 
   const setBreak = (e) => {
-    if (state === STATE.stopped) { changeBreak(cropTime(e.target.value * 60)); }
+    if (clockState === STATE.stopped) { changeBreak(cropTime(e.target.value * 60)); }
   }
 
-  const adjustBreak = ({ state, breakLength, action }) => () => {
+  const adjustBreak = ({ clockState, breakLength, action }) => () => {
     let adjustment = action === 'increment' ? 60 : 60 * -1;
-    if (state === STATE.stopped) { changeBreak(cropTime(breakLength + adjustment)); }
+    if (clockState === STATE.stopped) { changeBreak(cropTime(breakLength + adjustment)); }
   }
 
   function controlClock(e) {
@@ -122,7 +121,7 @@ function Clock(props) {
         /* The user stories require that the start and stop
          * actinos be implemented by the same control, which
          * toggles the running/stopped state */
-        if (state === STATE.stopped) {
+        if (clockState === STATE.stopped) {
           changeState(STATE.running);
         } else {
           window.clearTimeout(timerId);
@@ -156,9 +155,9 @@ function Clock(props) {
          * the time to the 'break' length, because we're about to
          * start a new break */
         setTime(mode === MODE.session ? breakLength: sessionLength);
-        console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode} ${state})`);
+        console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode} ${clockState})`);
       }
-      else if (state === STATE.running) {
+      else if (clockState === STATE.running) {
         /* In one second, reduce the remaining time by
          * one second via the supplied function, which will
          * trigger another state update and bring you back
@@ -188,7 +187,7 @@ function Clock(props) {
         handler={controlClock}
         breakLength={breakLength}
         sessionLength={sessionLength}
-        state={state}
+        clockState={clockState}
       />
     </div>
   );
@@ -206,20 +205,20 @@ function Display(props) {
 }
 
 function Controls(props) {
-  let { state, handler, breakLength, sessionLength } = props;
+  let { clockState, handler, breakLength, sessionLength } = props;
   let { setSession, adjustSession, setBreak, adjustBreak } = props.handlers;
   return (
     <div id='controls'>
     <ul>
-      <li><button type='button' id='start_stop' className={state} onClick={handler}>
-        <i className={`fas fa-${state === 'running' ? 'pause' : 'play'}`}></i>
+      <li><button type='button' id='start_stop' className={clockState} onClick={handler}>
+        <i className={`fas fa-${clockState === 'running' ? 'pause' : 'play'}`}></i>
       </button></li>
       <li><button type='button' id='reset' className='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
     </ul>
       <form id='settings'>
         <h3>Settings</h3>
         <label id='session-label' htmlFor='session-length'>Session</label>
-        <button type='button' id='session-decrement' onClick={adjustSession({ state, sessionLength, action: 'decrement' })}>
+        <button type='button' id='session-decrement' onClick={adjustSession({ clockState, sessionLength, action: 'decrement' })}>
           <i className="fas fa-arrow-alt-circle-left"></i>
         </button>
         <input
@@ -228,11 +227,11 @@ function Controls(props) {
           onChange={setSession}
           min='1' max='60'
         />
-        <button type='button' id='session-increment' onClick={adjustSession({ state, sessionLength, action: 'increment' })}>
+        <button type='button' id='session-increment' onClick={adjustSession({ clockState, sessionLength, action: 'increment' })}>
           <i className="fas fa-arrow-alt-circle-right"></i>
         </button>
         <label id='break-label' htmlFor='break-length'>Break</label>
-        <button type='button' id='break-decrement' onClick={adjustBreak({ state, breakLength, action: 'decrement' })}>
+        <button type='button' id='break-decrement' onClick={adjustBreak({ clockState, breakLength, action: 'decrement' })}>
           <i className="fas fa-arrow-alt-circle-left"></i>
         </button>
         <input type='number' id='break-length'
@@ -240,7 +239,7 @@ function Controls(props) {
           onChange={setBreak}
           min='1' max='60'
         />
-        <button type='button' id='break-increment' onClick={adjustBreak({ state, breakLength, action: 'increment' })}>
+        <button type='button' id='break-increment' onClick={adjustBreak({ clockState, breakLength, action: 'increment' })}>
           <i className="fas fa-arrow-alt-circle-right"></i>
         </button>
       </form>
