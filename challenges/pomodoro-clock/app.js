@@ -35,7 +35,7 @@ function Clock(props) {
   /* The clock has two states, running or stopped. Unfortunately
    * the nomenclature is a little confusing as it ovelaps with
    * React's "state" concept, but they are not related. */
-  const STATE = {
+  const CLOCK_STATE = {
     running: 'running',
     stopped: 'stopped'
   }
@@ -43,29 +43,42 @@ function Clock(props) {
   /* The clock also has two modes, "Session" and "Break". Each have
    * different time periods they can run for and they effectively
    * alternate indefinitely */
-  const MODE = {
+  const CLOCK_MODE = {
     session: 'session',
     break: 'break'
   }
 
   /* The default state is 'stopped' */
-  const [state, changeState] = React.useState(STATE.stopped);
+  const [clockState, changeState] = React.useState(CLOCK_STATE.stopped);
 
   /* The default mode is 'session' */
-  const [mode, changeMode] = React.useState(MODE.session);
+  const [mode, changeMode] = React.useState(CLOCK_MODE.session);
   /* We also have a small function to flip the mode
    * to whatever it's not. */
   function flipMode(mode) {
-    return mode === MODE.session ? MODE.break : MODE.session;
+    return mode === CLOCK_MODE.session ? CLOCK_MODE.break : CLOCK_MODE.session;
+  }
+
+  /* The clock counts in seconds, but everything is displayed in
+   * minutes, so we will use this increment to convert between
+   * data and display values */
+  const CLOCK_INCREMENT = 60;
+
+  /* Another helper to crop the time to be within the lower and
+   * upper bounds set by the requirements */
+  function cropTime(time) {
+    if (time >= 60 * CLOCK_INCREMENT) return 60 * CLOCK_INCREMENT;
+    else if (time <= 1 * CLOCK_INCREMENT) return 1 * CLOCK_INCREMENT;
+    else return time;
   }
 
   /* Default session and break lengths are stored in state */
-  const DEFAULTS = {
-    session: 25 * 60,
-    break: 5 * 60
+  const CLOCK_INITIAL_VALUES = {
+    session: 25 * CLOCK_INCREMENT,
+    break: 5 * CLOCK_INCREMENT
   }
-  const [sessionLength, changeSession] = React.useState(DEFAULTS.session);
-  const [breakLength, changeBreak] = React.useState(DEFAULTS.break);
+  const [sessionLength, changeSession] = React.useState(CLOCK_INITIAL_VALUES.session);
+  const [breakLength, changeBreak] = React.useState(CLOCK_INITIAL_VALUES.break);
 
   /* Set the timer to the default time, ready to run. */
   const [remainingTime, setTime] = React.useState(sessionLength);
@@ -76,73 +89,52 @@ function Clock(props) {
    * down one last second via the active Timeout. */
   let timerId;
 
-  function controlClock(e) {
-    /* This click handler makes changes to the clock's 'state'
-     * depending on the user's selection, and logic is
-     * then dealt with using React's useEffect() below
-     * which is fired whenever the state changes */
-    let control = e.currentTarget;
-    switch(control.id) {
-      case 'start_stop':
-        /* The user stories require that the start and stop
-         * actinos be implemented by the same control, which
-         * toggles the running/stopped state */
-        if (state === STATE.stopped) {
-          changeState(STATE.running);
-        } else {
-          window.clearTimeout(timerId);
-          changeState(STATE.stopped);
-        }
-        break;
-      case 'reset':
-        window.clearTimeout(timerId);
-        controlSound('load');
-        changeState(STATE.stopped);
-        changeMode(MODE.session);
-        changeSession(DEFAULTS.session);
-        changeBreak(DEFAULTS.break);
-        setTime(DEFAULTS.session);
-        break;
-      case 'session-increment':
-        if (state === STATE.stopped) {
-          let newTime = sessionLength >= 60 * 60 ? 60 * 60 : sessionLength + 60;
-          changeSession(newTime);
-          setTime(newTime);
-        }
-        break;
-      case 'session-decrement':
-        if (state === STATE.stopped) {
-          let newTime = sessionLength <= 60 ? 60 : sessionLength - 60;
-          changeSession(newTime);
-          setTime(newTime);
-        }
-        break;
-      case 'session-length':
-        if (state === STATE.stopped) {
-          changeSession(control.value * 60);
-          setTime(control.value * 60);
-        }
-        break;
-      case 'break-increment':
-        if (state === STATE.stopped) {
-          let newTime = breakLength >= 60 * 60 ? 60 * 60 : breakLength + 60;
-          changeBreak(newTime);
-        }
-        break;
-      case 'break-decrement':
-        let newTime = breakLength <= 60 ? 60 : breakLength - 60;
-        if (state === STATE.stopped) {
-          changeBreak(newTime);
-        }
-        break;
-      case 'break-length':
-        if (state === STATE.stopped) {
-          changeBreak(control.value * 60);
-        }
-        break;
-      default:
-        throw new Error('Control action received but not recognised.');
+  const setSession = (e) => {
+    if (clockState === CLOCK_STATE.stopped) {
+      let newTime = cropTime(e.target.value * CLOCK_INCREMENT);
+      changeSession(newTime);
+      setTime(newTime);
     }
+  }
+
+  const adjustSession = ({ clockState, sessionLength, action }) => () => {
+    let adjustment = action === 'increment' ? CLOCK_INCREMENT : CLOCK_INCREMENT * -1;
+    if (clockState === CLOCK_STATE.stopped) {
+      let newTime = cropTime(sessionLength + adjustment);
+      changeSession(newTime);
+      setTime(newTime);
+    }
+  }
+
+  const setBreak = (e) => {
+    if (clockState === CLOCK_STATE.stopped) { changeBreak(cropTime(e.target.value * CLOCK_INCREMENT)); }
+  }
+
+  const adjustBreak = ({ clockState, breakLength, action }) => () => {
+    let adjustment = action === 'increment' ? CLOCK_INCREMENT : CLOCK_INCREMENT * -1;
+    if (clockState === CLOCK_STATE.stopped) { changeBreak(cropTime(breakLength + adjustment)); }
+  }
+
+  const startStop = ({ clockState }) => () => {
+    /* The user stories require that the start and stop
+     * actions be implemented by the same control, which
+     * toggles the running/stopped state */
+    if (clockState === CLOCK_STATE.stopped) {
+      changeState(CLOCK_STATE.running);
+    } else {
+      window.clearTimeout(timerId);
+      changeState(CLOCK_STATE.stopped);
+    }
+  }
+
+  const resetClock = () => {
+    window.clearTimeout(timerId);
+    controlSound('load');
+    changeState(CLOCK_STATE.stopped);
+    changeMode(CLOCK_MODE.session);
+    changeSession(CLOCK_INITIAL_VALUES.session);
+    changeBreak(CLOCK_INITIAL_VALUES.break);
+    setTime(CLOCK_INITIAL_VALUES.session);
   }
 
   React.useEffect(() =>
@@ -156,10 +148,10 @@ function Clock(props) {
         /* Counterintuitively, if we're in 'session' we want to set
          * the time to the 'break' length, because we're about to
          * start a new break */
-        setTime(mode === MODE.session ? breakLength: sessionLength);
-        console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode} ${state})`);
+        setTime(mode === CLOCK_MODE.session ? breakLength: sessionLength);
+        console.log(`${formatTime(remainingTime, 'mm:ss')} (${mode} ${clockState})`);
       }
-      else if (state === STATE.running) {
+      else if (clockState === CLOCK_STATE.running) {
         /* In one second, reduce the remaining time by
          * one second via the supplied function, which will
          * trigger another state update and bring you back
@@ -178,62 +170,71 @@ function Clock(props) {
 
   return (
     <div id='clock'>
-      <Display time={formatTime(remainingTime, 'mm:ss')} mode={mode} />
+      <Display remainingTime={remainingTime} mode={mode} />
       <Controls
-        handler={controlClock}
-        breakLength={formatTime(breakLength, 'mm')}
-        sessionLength={formatTime(sessionLength, 'mm')}
-        state={state}
+        handlers={{
+          setSession,
+          adjustSession,
+          setBreak,
+          adjustBreak,
+          startStop,
+          resetClock
+        }}
+        breakLength={breakLength}
+        sessionLength={sessionLength}
+        clockState={clockState}
       />
     </div>
   );
 }
 
 function Display(props) {
+  const { remainingTime, mode } = props;
   return (
     <div className='display'>
-      <h3 id='timer-label'>{titleCase(props.mode)}</h3>
-      <p id='time-left'>{props.time}</p>
+      <h3 id='timer-label'>{titleCase(mode)}</h3>
+      <p id='time-left'>{formatTime(remainingTime, 'mm:ss')}</p>
       <audio id='beep' src="beep.m4a"></audio>
     </div>
   );
 }
 
 function Controls(props) {
-  let { state, handler } = props;
+  let { clockState, breakLength, sessionLength } = props;
+  let { setSession, adjustSession, setBreak, adjustBreak, startStop, resetClock } = props.handlers;
   return (
     <div id='controls'>
     <ul>
-      <li><button type='button' id='start_stop' className={state} onClick={handler}>
-        <i className={`fas fa-${state === 'running' ? 'pause' : 'play'}`}></i>
+      <li><button type='button' id='start_stop' className={clockState} onClick={startStop({ clockState })}>
+        <i className={`fas fa-${clockState === 'running' ? 'pause' : 'play'}`}></i>
       </button></li>
-      <li><button type='button' id='reset' className='reset' onClick={props.handler}><i className="fas fa-history"></i></button></li>
+      <li><button type='button' id='reset' className='reset' onClick={resetClock}><i className="fas fa-history"></i></button></li>
     </ul>
       <form id='settings'>
         <h3>Settings</h3>
         <label id='session-label' htmlFor='session-length'>Session</label>
-        <button type='button' id='session-decrement' onClick={props.handler}>
+        <button type='button' id='session-decrement' onClick={adjustSession({ clockState, sessionLength, action: 'decrement' })}>
           <i className="fas fa-arrow-alt-circle-left"></i>
         </button>
         <input
           type='number' id='session-length'
-          name='session-length' value={props.sessionLength}
-          onChange={props.handler}
+          name='session-length' value={formatTime(sessionLength, 'mm')}
+          onChange={setSession}
           min='1' max='60'
         />
-        <button type='button' id='session-increment' onClick={props.handler}>
+        <button type='button' id='session-increment' onClick={adjustSession({ clockState, sessionLength, action: 'increment' })}>
           <i className="fas fa-arrow-alt-circle-right"></i>
         </button>
         <label id='break-label' htmlFor='break-length'>Break</label>
-        <button type='button' id='break-decrement' onClick={props.handler}>
+        <button type='button' id='break-decrement' onClick={adjustBreak({ clockState, breakLength, action: 'decrement' })}>
           <i className="fas fa-arrow-alt-circle-left"></i>
         </button>
         <input type='number' id='break-length'
-          name='break-length' value={props.breakLength}
-          onChange={props.handler}
+          name='break-length' value={formatTime(breakLength, 'mm')}
+          onChange={setBreak}
           min='1' max='60'
         />
-        <button type='button' id='break-increment' onClick={props.handler}>
+        <button type='button' id='break-increment' onClick={adjustBreak({ clockState, breakLength, action: 'increment' })}>
           <i className="fas fa-arrow-alt-circle-right"></i>
         </button>
       </form>
