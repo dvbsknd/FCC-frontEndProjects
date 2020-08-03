@@ -59,18 +59,23 @@ function Clock(props) {
     return mode === CLOCK_MODE.session ? CLOCK_MODE.break : CLOCK_MODE.session;
   }
 
+  /* The clock counts in seconds, but everything is displayed in
+   * minutes, so we will use this increment to convert between
+   * data and display values */
+  const CLOCK_INCREMENT = 60;
+
   /* Another helper to crop the time to be within the lower and
    * upper bounds set by the requirements */
   function cropTime(time) {
-    if (time >= 60 * 60) return 60 * 60;
-    else if (time <= 1 * 60) return 1 * 60;
+    if (time >= 60 * CLOCK_INCREMENT) return 60 * CLOCK_INCREMENT;
+    else if (time <= 1 * CLOCK_INCREMENT) return 1 * CLOCK_INCREMENT;
     else return time;
   }
 
   /* Default session and break lengths are stored in state */
   const CLOCK_INITIAL_VALUES = {
-    session: 25 * 60,
-    break: 5 * 60
+    session: 25 * CLOCK_INCREMENT,
+    break: 5 * CLOCK_INCREMENT
   }
   const [sessionLength, changeSession] = React.useState(CLOCK_INITIAL_VALUES.session);
   const [breakLength, changeBreak] = React.useState(CLOCK_INITIAL_VALUES.break);
@@ -86,14 +91,14 @@ function Clock(props) {
 
   const setSession = (e) => {
     if (clockState === CLOCK_STATE.stopped) {
-      let newTime = cropTime(e.target.value * 60);
+      let newTime = cropTime(e.target.value * CLOCK_INCREMENT);
       changeSession(newTime);
       setTime(newTime);
     }
   }
 
   const adjustSession = ({ clockState, sessionLength, action }) => () => {
-    let adjustment = action === 'increment' ? 60 : 60 * -1;
+    let adjustment = action === 'increment' ? CLOCK_INCREMENT : CLOCK_INCREMENT * -1;
     if (clockState === CLOCK_STATE.stopped) {
       let newTime = cropTime(sessionLength + adjustment);
       changeSession(newTime);
@@ -102,11 +107,11 @@ function Clock(props) {
   }
 
   const setBreak = (e) => {
-    if (clockState === CLOCK_STATE.stopped) { changeBreak(cropTime(e.target.value * 60)); }
+    if (clockState === CLOCK_STATE.stopped) { changeBreak(cropTime(e.target.value * CLOCK_INCREMENT)); }
   }
 
   const adjustBreak = ({ clockState, breakLength, action }) => () => {
-    let adjustment = action === 'increment' ? 60 : 60 * -1;
+    let adjustment = action === 'increment' ? CLOCK_INCREMENT : CLOCK_INCREMENT * -1;
     if (clockState === CLOCK_STATE.stopped) { changeBreak(cropTime(breakLength + adjustment)); }
   }
 
