@@ -68,12 +68,12 @@ function Clock(props) {
   }
 
   /* Default session and break lengths are stored in state */
-  const DEFAULTS = {
+  const CLOCK_INITIAL_VALUES = {
     session: 25 * 60,
     break: 5 * 60
   }
-  const [sessionLength, changeSession] = React.useState(DEFAULTS.session);
-  const [breakLength, changeBreak] = React.useState(DEFAULTS.break);
+  const [sessionLength, changeSession] = React.useState(CLOCK_INITIAL_VALUES.session);
+  const [breakLength, changeBreak] = React.useState(CLOCK_INITIAL_VALUES.break);
 
   /* Set the timer to the default time, ready to run. */
   const [remainingTime, setTime] = React.useState(sessionLength);
@@ -127,9 +127,9 @@ function Clock(props) {
     controlSound('load');
     changeState(CLOCK_STATE.stopped);
     changeMode(CLOCK_MODE.session);
-    changeSession(DEFAULTS.session);
-    changeBreak(DEFAULTS.break);
-    setTime(DEFAULTS.session);
+    changeSession(CLOCK_INITIAL_VALUES.session);
+    changeBreak(CLOCK_INITIAL_VALUES.break);
+    setTime(CLOCK_INITIAL_VALUES.session);
   }
 
   React.useEffect(() =>
